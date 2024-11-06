@@ -1,84 +1,29 @@
-// Firebase setup (v11)
+// Import Firebase SDK modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDjRd-cDN-Vm3fBilEucWhjvHAgxC8DNPg",
-    authDomain: "movie-157b3.firebaseapp.com",
-    projectId: "movie-157b3",
-    storageBucket: "movie-157b3.firebasestorage.app",
-    messagingSenderId: "203534531954",
-    appId: "1:203534531954:web:6c52404d4e40ebe43bf1eb",
-    measurementId: "G-9975F0DVV3"
+    apiKey: "AIzaSyDjRd-cDN-Vm3fBilEucWhjvHAgxC8DNPg", // Your API key
+    authDomain: "movie-157b3.firebaseapp.com",  // Your Auth Domain
+    projectId: "movie-157b3",                   // Your Firebase project ID
+    storageBucket: "movie-157b3.firebasestorage.app", // Your Firebase storage bucket
+    messagingSenderId: "203534531954",          // Your Sender ID
+    appId: "1:203534531954:web:4b43b0757e5316fe3bf1eb", // Your Firebase app ID
+    measurementId: "G-BWCPH92QZT"               // Your Firebase measurement ID
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// Optional: Initialize Firebase Analytics if you need analytics tracking
+const analytics = getAnalytics(app);
+
+// Initialize Firebase Realtime Database
 const database = getDatabase(app);
 
-// TMDb API Setup
-const apiKey = 'YOUR_TMDB_API_KEY';  // Replace with your actual API key
-const tmdbBaseUrl = 'https://api.themoviedb.org/3/';
-
-// Fetch available genres from TMDb
-async function fetchGenres() {
-    const response = await fetch(`${tmdbBaseUrl}genre/movie/list?api_key=${apiKey}`);
-    const data = await response.json();
-    const genreSelect = document.getElementById('genre');
-    
-    data.genres.forEach(genre => {
-        const option = document.createElement('option');
-        option.value = genre.id;
-        option.textContent = genre.name;
-        genreSelect.appendChild(option);
-    });
-}
-
-// Fetch movies based on filters
-async function findMovies() {
-    const genre = document.getElementById('genre').value;
-    const type = document.getElementById('type').value;
-    const mood = document.getElementById('mood').value;
-    const rating = document.getElementById('rating').value;
-
-    let url = `${tmdbBaseUrl}discover/movie?api_key=${apiKey}&with_genres=${genre}&vote_average.gte=${rating}`;
-
-    if (type === 'tv') {
-        url = `${tmdbBaseUrl}discover/tv?api_key=${apiKey}&with_genres=${genre}&vote_average.gte=${rating}`;
-    }
-
-    const response = await fetch(url);
-    const data = await response.json();
-
-    displayMovies(data.results);
-
-    // Save the user's selection to Firebase
-    saveUserPreferences(genre, type, mood, rating);
-}
-
-// Display movies
-function displayMovies(movies) {
-    const movieList = document.getElementById('movie-list');
-    movieList.innerHTML = '';
-
-    if (movies.length === 0) {
-        movieList.innerHTML = 'No movies found.';
-        return;
-    }
-
-    movies.forEach(movie => {
-        const div = document.createElement('div');
-        div.innerHTML = `
-            <h3>${movie.title || movie.name}</h3>
-            <p>Rating: ${movie.vote_average}</p>
-            <p>${movie.overview}</p>
-        `;
-        movieList.appendChild(div);
-    });
-}
-
-// Save user preferences to Firebase
+// Example function to save user preferences to Firebase
 function saveUserPreferences(genre, type, mood, rating) {
     const preferencesRef = ref(database, 'userPreferences');
     push(preferencesRef, {
@@ -87,11 +32,30 @@ function saveUserPreferences(genre, type, mood, rating) {
         mood: mood,
         rating: rating
     }).then(() => {
-        console.log('Preferences saved successfully!');
+        console.log("Preferences saved successfully!");
     }).catch((error) => {
-        console.error('Error saving preferences:', error);
+        console.error("Error saving preferences:", error);
     });
 }
 
-// Initialize the app and load genres
-fetchGenres();
+// Example function to get data from Firebase
+function getUserPreferences() {
+    const preferencesRef = ref(database, 'userPreferences');
+    onValue(preferencesRef, (snapshot) => {
+        const data = snapshot.val();
+        console.log(data);  // This will log the preferences stored in Firebase
+    });
+}
+
+// Example function that uses Firebase data (optional)
+function findMovies() {
+    const genre = document.getElementById('genre').value;
+    const type = document.getElementById('type').value;
+    const mood = document.getElementById('mood').value;
+    const rating = document.getElementById('rating').value;
+
+    // Save the preferences to Firebase (optional)
+    saveUserPreferences(genre, type, mood, rating);
+
+    // Continue with your logic to fetch movie data (e.g., from TMDb API)
+}
