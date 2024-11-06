@@ -56,9 +56,9 @@ function populateGenres() {
     const genreSelect = document.getElementById('genre');
     genres.forEach(genre => {
         const option = document.createElement('option');
-        option.value = genre.toLowerCase();
+        option.value = genre.toLowerCase();  // Use lowercase for easier comparison
         option.textContent = genre;
-        genreSelect.appendChild(option);
+        genreSelect.appendChild(option);  // Append the option to the select element
     });
 }
 
@@ -75,7 +75,7 @@ function findMovies() {
     // Continue with your logic to fetch movie data (e.g., from TMDb API)
 }
 
-// Call the function to populate genre options on page load
+// Ensure genres are populated when the page is loaded
 window.onload = function() {
-    populateGenres();
+    populateGenres();  // Populate the genre dropdown
 };
