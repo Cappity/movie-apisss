@@ -1,7 +1,7 @@
 // Import Firebase SDK modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -47,6 +47,21 @@ function getUserPreferences() {
     });
 }
 
+// Function to populate genre dropdown
+function populateGenres() {
+    const genres = [
+        "Action", "Adventure", "Animation", "Comedy", "Drama", "Horror", "Mystery", "Romance", "Sci-Fi", "Thriller", "Fantasy"
+    ];
+
+    const genreSelect = document.getElementById('genre');
+    genres.forEach(genre => {
+        const option = document.createElement('option');
+        option.value = genre.toLowerCase();
+        option.textContent = genre;
+        genreSelect.appendChild(option);
+    });
+}
+
 // Example function that uses Firebase data (optional)
 function findMovies() {
     const genre = document.getElementById('genre').value;
@@ -59,3 +74,8 @@ function findMovies() {
 
     // Continue with your logic to fetch movie data (e.g., from TMDb API)
 }
+
+// Call the function to populate genre options on page load
+window.onload = function() {
+    populateGenres();
+};
