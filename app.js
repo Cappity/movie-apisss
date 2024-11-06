@@ -3,6 +3,10 @@ const apiKey = '08bb75ebbc2cef7ce36ec8d4e8860828';
 
 // Fetching genres for the dropdown
 document.addEventListener('DOMContentLoaded', () => {
+    // Load preferences from localStorage if any
+    loadPreferences();
+
+    // Fetch genres from TMDb API and populate the genre dropdown
     fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=' + apiKey)
         .then(response => response.json())
         .then(data => {
@@ -19,12 +23,45 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
+// Function to save user preferences to localStorage
+function savePreferences() {
+    const genre = document.getElementById('genre').value;
+    const type = document.getElementById('type').value;
+    const mood = document.getElementById('mood').value;
+    const rating = document.getElementById('rating').value;
+
+    const preferences = { genre, type, mood, rating };
+
+    // Save preferences to localStorage
+    localStorage.setItem('moviePreferences', JSON.stringify(preferences));
+
+    console.log("Preferences saved:", preferences);
+}
+
+// Function to load saved preferences from localStorage
+function loadPreferences() {
+    const savedPreferences = localStorage.getItem('moviePreferences');
+    
+    if (savedPreferences) {
+        const preferences = JSON.parse(savedPreferences);
+
+        // Set the saved preferences in the form fields
+        document.getElementById('genre').value = preferences.genre || '';
+        document.getElementById('type').value = preferences.type || 'movie';
+        document.getElementById('mood').value = preferences.mood || '';
+        document.getElementById('rating').value = preferences.rating || '1';
+    }
+}
+
 // Function to fetch movies based on filters
 function findMovies() {
     const genre = document.getElementById('genre').value;
     const type = document.getElementById('type').value;
     const mood = document.getElementById('mood').value;
     const rating = document.getElementById('rating').value;
+
+    // Save the preferences when the button is clicked
+    savePreferences();
 
     if (!genre || !rating) {
         alert('Please select a genre and rating!');
