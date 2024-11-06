@@ -1,5 +1,5 @@
 // Your TMDb API Key
-const apiKey = 'YOUR_TMDB_API_KEY';
+const apiKey = '08bb75ebbc2cef7ce36ec8d4e8860828';
 
 // Fetching genres for the dropdown
 document.addEventListener('DOMContentLoaded', () => {
