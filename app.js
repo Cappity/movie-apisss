@@ -1,13 +1,10 @@
-// Your TMDb API Key
-const apiKey = '08bb75ebbc2cef7ce36ec8d4e8860828';
-
 // Fetching genres for the dropdown
 document.addEventListener('DOMContentLoaded', () => {
     // Load preferences from localStorage if any
     loadPreferences();
 
-    // Fetch genres from TMDb API and populate the genre dropdown
-    fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=' + apiKey)
+    // Fetch genres from the backend
+    fetch('http://localhost:3000/api/genres')
         .then(response => response.json())
         .then(data => {
             const genreSelect = document.getElementById('genre');
@@ -68,12 +65,12 @@ function findMovies() {
         return;
     }
 
-    const url = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_genres=${genre}&vote_average.gte=${rating}`;
+    const url = `http://localhost:3000/api/movies?genre=${genre}&rating=${rating}`;
 
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            displayMovies(data.results);
+            displayMovies(data);
         })
         .catch(error => {
             console.error('Error fetching movies:', error);
