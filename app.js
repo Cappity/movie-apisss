@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             console.log('Fetched Genres:', data); // Log the response to verify the data structure
             const genreSelect = document.getElementById('genre');
-
+            
             // Check if genres are available and ensure they are in the right format
             if (data.genres && Array.isArray(data.genres)) {
                 // Populate the genre dropdown dynamically
