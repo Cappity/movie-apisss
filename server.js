@@ -1,11 +1,15 @@
 const express = require('express');
 const axios = require('axios');
-require('dotenv').config();  // This loads environment variables from .env file
+require('dotenv').config();  // Loads environment variables from .env file
+const cors = require('cors'); // Importing cors to handle CORS issues
 
 const app = express();
-const port = 3000;  // Port your backend will run on
+const port = 3000;  // Port the backend will run on
 
 const apiKey = process.env.TMDB_API_KEY;  // Use your API key from .env file
+
+// Enable CORS to allow the frontend to fetch data
+app.use(cors());
 
 // Endpoint to get movie genres
 app.get('/api/genres', async (req, res) => {
